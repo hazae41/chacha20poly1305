@@ -1,7 +1,7 @@
 import { Cursor, CursorWriteError } from "@hazae41/cursor"
 import { None, Option } from "@hazae41/option"
 import { Ok, Result } from "@hazae41/result"
-import { CryptoError } from "libs/crypto/crypto.js"
+import { DecryptError, EncryptError, ImportError } from "./errors.js"
 
 let global: Option<Adapter> = new None()
 
@@ -58,12 +58,12 @@ export class Copied implements Copiable {
 }
 
 export interface Cipher extends Disposable {
-  tryEncrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }): Result<Copiable, CryptoError>
-  tryDecrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }): Result<Copiable, CryptoError>
+  tryEncrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }): Result<Copiable, EncryptError>
+  tryDecrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }): Result<Copiable, DecryptError>
 }
 
 export interface CipherFactory {
-  tryImport(key: Uint8Array & { length: 32 }): Result<Cipher, CryptoError>
+  tryImport(key: Uint8Array & { length: 32 }): Result<Cipher, ImportError>
 }
 
 export interface Adapter {

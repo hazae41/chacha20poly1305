@@ -1,8 +1,10 @@
-import type { Zepar } from "@hazae41/zepar"
-import { tryCryptoSync } from "libs/crypto/crypto.js"
+import { Result } from "@hazae41/result"
+import { Zepar } from "@hazae41/zepar"
 import { Adapter } from "./adapter.js"
+import { DecryptError, EncryptError, ImportError } from "./errors.js"
 
-export function fromZepar(zepar: typeof Zepar): Adapter {
+export async function fromZepar(): Promise<Adapter> {
+  await Zepar.initBundledOnce()
 
   class Cipher {
 
@@ -19,15 +21,21 @@ export function fromZepar(zepar: typeof Zepar): Adapter {
     }
 
     static tryImport(key: Uint8Array & { length: 32 }) {
-      return tryCryptoSync(() => new zepar.ChaCha20Poly1305Cipher(key)).mapSync(Cipher.new)
+      return Result.runAndWrapSync(() => {
+        return new Zepar.ChaCha20Poly1305Cipher(key)
+      }).mapErrSync(ImportError.from).mapSync(Cipher.new)
     }
 
     tryEncrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }) {
-      return tryCryptoSync(() => this.inner.encrypt(message, nonce))
+      return Result.runAndWrapSync(() => {
+        return this.inner.encrypt(message, nonce)
+      }).mapErrSync(EncryptError.from)
     }
 
     tryDecrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }) {
-      return tryCryptoSync(() => this.inner.decrypt(message, nonce))
+      return Result.runAndWrapSync(() => {
+        return this.inner.decrypt(message, nonce)
+      }).mapErrSync(DecryptError.from)
     }
 
   }

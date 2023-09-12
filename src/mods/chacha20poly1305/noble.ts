@@ -1,10 +1,9 @@
-import { Ok } from "@hazae41/result"
-import type { chacha20poly1305 } from "@noble/ciphers/chacha"
-import { tryCryptoSync } from "libs/crypto/crypto.js"
+import { Ok, Result } from "@hazae41/result"
+import { chacha20poly1305 } from "@noble/ciphers/chacha"
 import { Adapter, Copied } from "./adapter.js"
+import { DecryptError, EncryptError } from "./errors.js"
 
-
-export function fromNoble(noble: typeof chacha20poly1305): Adapter {
+export function fromNoble(): Adapter {
 
   class Cipher {
 
@@ -23,11 +22,15 @@ export function fromNoble(noble: typeof chacha20poly1305): Adapter {
     }
 
     tryEncrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }) {
-      return tryCryptoSync(() => noble(this.key, nonce.slice()).encrypt(message)).mapSync(Copied.new)
+      return Result.runAndWrapSync(() => {
+        return chacha20poly1305(this.key, nonce.slice()).encrypt(message)
+      }).mapErrSync(EncryptError.from).mapSync(Copied.new)
     }
 
     tryDecrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }) {
-      return tryCryptoSync(() => noble(this.key, nonce.slice()).decrypt(message)).mapSync(Copied.new)
+      return Result.runAndWrapSync(() => {
+        return chacha20poly1305(this.key, nonce.slice()).decrypt(message)
+      }).mapErrSync(DecryptError.from).mapSync(Copied.new)
     }
 
   }
