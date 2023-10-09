@@ -19,7 +19,7 @@ export function fromNoble(): Adapter {
     }
 
     static tryImport(key: Box<Copiable<Uint8Array & { length: 32 }>>) {
-      return new Ok(new Cipher(key.get().bytes.slice() as Uint8Array & { length: 32 }))
+      return new Ok(new Cipher(key.unwrap().copyAndDispose().bytes.slice() as Uint8Array & { length: 32 }))
     }
 
     tryEncrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
