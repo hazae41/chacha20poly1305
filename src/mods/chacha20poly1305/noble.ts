@@ -9,28 +9,30 @@ export function fromNoble(): Adapter {
   class Cipher {
 
     constructor(
-      readonly key: Uint8Array & { length: 32 }
+      readonly key: Box<Copiable<Uint8Array & { length: 32 }>>
     ) { }
 
-    [Symbol.dispose]() { }
+    [Symbol.dispose]() {
+      this.key[Symbol.dispose]()
+    }
 
-    static new(key: Uint8Array & { length: 32 }) {
+    static new(key: Box<Copiable<Uint8Array & { length: 32 }>>) {
       return new Cipher(key)
     }
 
     static tryImport(key: Box<Copiable<Uint8Array & { length: 32 }>>) {
-      return new Ok(new Cipher(key.unwrap().copyAndDispose().bytes.slice() as Uint8Array & { length: 32 }))
+      return new Ok(new Cipher(new Box(new Copied(key.unwrap().copyAndDispose().bytes.slice() as Uint8Array & { length: 32 }))))
     }
 
     tryEncrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
       return Result.runAndWrapSync(() => {
-        return chacha20poly1305(this.key, nonce.get().bytes.slice()).encrypt(message.get().bytes)
+        return chacha20poly1305(this.key.get().bytes, nonce.get().bytes.slice()).encrypt(message.get().bytes)
       }).mapErrSync(EncryptError.from).mapSync(Copied.new)
     }
 
     tryDecrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
       return Result.runAndWrapSync(() => {
-        return chacha20poly1305(this.key, nonce.get().bytes.slice()).decrypt(message.get().bytes)
+        return chacha20poly1305(this.key.get().bytes, nonce.get().bytes.slice()).decrypt(message.get().bytes)
       }).mapErrSync(DecryptError.from).mapSync(Copied.new)
     }
 
