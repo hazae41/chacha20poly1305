@@ -1,3 +1,4 @@
+import { Box, Copiable } from "@hazae41/box"
 import { Result } from "@hazae41/result"
 import { Zepar } from "@hazae41/zepar"
 import { Adapter } from "./adapter.js"
@@ -20,19 +21,19 @@ export async function fromZepar(): Promise<Adapter> {
       return new Cipher(inner)
     }
 
-    static tryImport(key: Uint8Array & { length: 32 }) {
+    static tryImport(key: Box<Copiable<Uint8Array & { length: 32 }>>) {
       return Result.runAndWrapSync(() => {
         return new Zepar.ChaCha20Poly1305Cipher(key)
       }).mapErrSync(ImportError.from).mapSync(Cipher.new)
     }
 
-    tryEncrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }) {
+    tryEncrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
       return Result.runAndWrapSync(() => {
         return this.inner.encrypt(message, nonce)
       }).mapErrSync(EncryptError.from)
     }
 
-    tryDecrypt(message: Uint8Array, nonce: Uint8Array & { length: 12 }) {
+    tryDecrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
       return Result.runAndWrapSync(() => {
         return this.inner.decrypt(message, nonce)
       }).mapErrSync(DecryptError.from)
