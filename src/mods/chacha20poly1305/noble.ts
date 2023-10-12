@@ -1,10 +1,14 @@
-import { Box, Copiable, Copied } from "@hazae41/box"
+import { BytesOrCopiable, Copied } from "@hazae41/box"
 import { Ok, Result } from "@hazae41/result"
 import { chacha20poly1305 } from "@noble/ciphers/chacha"
 import { Adapter } from "./adapter.js"
 import { DecryptError, EncryptError } from "./errors.js"
 
 export function fromNoble(): Adapter {
+
+  function getBytes<T extends number>(bytes: BytesOrCopiable<T>) {
+    return "bytes" in bytes ? bytes.bytes : bytes
+  }
 
   class Cipher {
 
@@ -18,19 +22,19 @@ export function fromNoble(): Adapter {
       return new Cipher(key)
     }
 
-    static tryImport(key: Box<Copiable<Uint8Array & { length: 32 }>>) {
-      return new Ok(new Cipher(key.get().bytes.slice() as Uint8Array & { length: 32 }))
+    static tryImport(key: BytesOrCopiable<32>) {
+      return new Ok(new Cipher(getBytes(key).slice()))
     }
 
-    tryEncrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
+    tryEncrypt(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
       return Result.runAndWrapSync(() => {
-        return chacha20poly1305(this.key, nonce.get().bytes.slice()).encrypt(message.get().bytes)
+        return chacha20poly1305(this.key, getBytes(nonce).slice()).encrypt(getBytes(message))
       }).mapErrSync(EncryptError.from).mapSync(Copied.new)
     }
 
-    tryDecrypt(message: Box<Copiable>, nonce: Box<Copiable<Uint8Array & { length: 12 }>>) {
+    tryDecrypt(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
       return Result.runAndWrapSync(() => {
-        return chacha20poly1305(this.key, nonce.get().bytes.slice()).decrypt(message.get().bytes)
+        return chacha20poly1305(this.key, getBytes(nonce).slice()).decrypt(getBytes(message))
       }).mapErrSync(DecryptError.from).mapSync(Copied.new)
     }
 
