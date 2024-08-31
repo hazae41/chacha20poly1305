@@ -16,16 +16,19 @@ npm i @hazae41/chacha20poly1305
 
 ## Usage
 
-### Zepar (WebAssembly)
+### WebAssembly
 
 ```bash
-npm i @hazae41/zepar
+npm i @hazae41/chacha20poly1305.wasm
 ```
 
 ```typescript
 import { ChaCha20Poly1305 } from "@hazae41/chacha20poly1305"
+import { ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
 
-ChaCha20Poly1305.set(await ChaCha20Poly1305.fromZepar())
+await ChaCha20Poly1305Wasm.initBundled()
+
+ChaCha20Poly1305.set(ChaCha20Poly1305.fromWasm(ChaCha20Poly1305Wasm))
 ```
 
 ### Noble (JavaScript)
@@ -36,6 +39,7 @@ npm i @noble/ciphers
 
 ```typescript
 import { ChaCha20Poly1305 } from "@hazae41/chacha20poly1305"
+import * as ChaChaNoble from "@noble/ciphers/chacha"
 
-ChaCha20Poly1305.set(ChaCha20Poly1305.fromNoble())
+ChaCha20Poly1305.set(ChaCha20Poly1305.fromNoble(ChaChaNoble))
 ```

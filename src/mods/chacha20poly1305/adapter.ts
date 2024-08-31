@@ -1,25 +1,23 @@
-import { BytesOrCopiable, Copiable } from "@hazae41/box"
-import { None, Option } from "@hazae41/option"
-import { Result } from "@hazae41/result"
-import { DecryptError, EncryptError, ImportError } from "./errors.js"
+import { None, Nullable, Option } from "@hazae41/option"
+import { BytesOrCopiable, Copiable } from "libs/copiable/index.js"
 
 let global: Option<Adapter> = new None()
 
 export function get() {
-  return global.unwrap()
+  return global
 }
 
-export function set(value?: Adapter) {
+export function set(value: Nullable<Adapter>) {
   global = Option.wrap(value)
 }
 
 export interface Cipher extends Disposable {
-  tryEncrypt(message: BytesOrCopiable, nonce: BytesOrCopiable<12>): Result<Copiable, EncryptError>
-  tryDecrypt(message: BytesOrCopiable, nonce: BytesOrCopiable<12>): Result<Copiable, DecryptError>
+  encryptOrThrow(message: BytesOrCopiable, nonce: BytesOrCopiable<12>): Copiable
+  decryptOrThrow(message: BytesOrCopiable, nonce: BytesOrCopiable<12>): Copiable
 }
 
 export interface CipherFactory {
-  tryImport(key: BytesOrCopiable<32>): Result<Cipher, ImportError>
+  importOrThrow(key: BytesOrCopiable<32>): Cipher
 }
 
 export interface Adapter {

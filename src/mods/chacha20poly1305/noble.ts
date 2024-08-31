@@ -1,12 +1,11 @@
-import { BytesOrCopiable, Copied } from "@hazae41/box"
-import { Ok, Result } from "@hazae41/result"
-import { chacha20poly1305 } from "@noble/ciphers/chacha"
+import type * as ChaChaNoble from "@noble/ciphers/chacha"
+import { BytesOrCopiable, Copied } from "libs/copiable/index.js"
 import { Adapter } from "./adapter.js"
-import { DecryptError, EncryptError } from "./errors.js"
 
-export function fromNoble(): Adapter {
+export function fromNoble(noble: typeof ChaChaNoble): Adapter {
+  const { chacha20poly1305 } = noble
 
-  function getBytes<T extends number>(bytes: BytesOrCopiable<T>) {
+  function getBytes(bytes: BytesOrCopiable) {
     return "bytes" in bytes ? bytes.bytes : bytes
   }
 
@@ -18,27 +17,23 @@ export function fromNoble(): Adapter {
 
     [Symbol.dispose]() { }
 
-    static new(key: Uint8Array) {
+    static create(key: Uint8Array) {
       return new Cipher(key)
     }
 
-    static tryImport(key: BytesOrCopiable<32>) {
-      return new Ok(new Cipher(getBytes(key).slice()))
+    static importOrThrow(key: BytesOrCopiable<32>) {
+      return new Cipher(getBytes(key).slice())
     }
 
-    tryEncrypt(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
-      return Result.runAndWrapSync(() => {
-        return chacha20poly1305(this.key, getBytes(nonce).slice()).encrypt(getBytes(message))
-      }).mapErrSync(EncryptError.from).mapSync(Copied.new)
+    encryptOrThrow(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
+      return new Copied(chacha20poly1305(this.key, getBytes(nonce).slice()).encrypt(getBytes(message)))
     }
 
-    tryDecrypt(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
-      return Result.runAndWrapSync(() => {
-        return chacha20poly1305(this.key, getBytes(nonce).slice()).decrypt(getBytes(message))
-      }).mapErrSync(DecryptError.from).mapSync(Copied.new)
+    decryptOrThrow(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
+      return new Copied(chacha20poly1305(this.key, getBytes(nonce).slice()).decrypt(getBytes(message)))
     }
 
   }
 
-  return { Cipher }
+  return { Cipher } satisfies Adapter
 }
