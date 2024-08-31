@@ -2,7 +2,7 @@ import type * as ChaChaNoble from "@noble/ciphers/chacha"
 import { BytesOrCopiable, Copied } from "libs/copiable/index.js"
 import { Adapter } from "./adapter.js"
 
-export function fromNoble(noble: typeof ChaChaNoble): Adapter {
+export function fromNoble(noble: typeof ChaChaNoble) {
   const { chacha20poly1305 } = noble
 
   function getBytes(bytes: BytesOrCopiable) {
