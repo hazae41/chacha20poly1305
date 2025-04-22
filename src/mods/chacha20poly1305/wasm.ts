@@ -1,6 +1,7 @@
 import { Box } from "@hazae41/box"
 import type { ChaCha20Poly1305Cipher, ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
 import { BytesOrCopiable } from "libs/copiable/index.js"
+import * as Abstract from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
 export function fromWasm(wasm: typeof ChaCha20Poly1305Wasm) {
@@ -14,11 +15,13 @@ export function fromWasm(wasm: typeof ChaCha20Poly1305Wasm) {
     return Box.create(new Memory(bytesOrCopiable.bytes))
   }
 
-  class Cipher {
+  class Cipher extends Abstract.Cipher {
 
     constructor(
       readonly inner: ChaCha20Poly1305Cipher
-    ) { }
+    ) {
+      super()
+    }
 
     [Symbol.dispose]() {
       using _ = this.inner
