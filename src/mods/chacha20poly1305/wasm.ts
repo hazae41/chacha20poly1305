@@ -8,7 +8,7 @@ export function fromWasm(wasm: typeof ChaCha20Poly1305Wasm) {
 
   function getMemory(bytesOrCopiable: BytesOrCopiable) {
     if (bytesOrCopiable instanceof Memory)
-      return Box.createAsMoved(bytesOrCopiable)
+      return Box.createAsDropped(bytesOrCopiable)
     if (bytesOrCopiable instanceof Uint8Array)
       return Box.create(new Memory(bytesOrCopiable))
     return Box.create(new Memory(bytesOrCopiable.bytes))
@@ -31,21 +31,21 @@ export function fromWasm(wasm: typeof ChaCha20Poly1305Wasm) {
     static importOrThrow(key: BytesOrCopiable<32>) {
       using mkey = getMemory(key)
 
-      return new Cipher(new ChaCha20Poly1305Cipher(mkey.inner))
+      return new Cipher(new ChaCha20Poly1305Cipher(mkey.value))
     }
 
     encryptOrThrow(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
       using mmessage = getMemory(message)
       using mnonce = getMemory(nonce)
 
-      return this.inner.encrypt(mmessage.inner, mnonce.inner)
+      return this.inner.encrypt(mmessage.value, mnonce.value)
     }
 
     decryptOrThrow(message: BytesOrCopiable, nonce: BytesOrCopiable<12>) {
       using mmessage = getMemory(message)
       using mnonce = getMemory(nonce)
 
-      return this.inner.decrypt(mmessage.inner, mnonce.inner)
+      return this.inner.decrypt(mmessage.value, mnonce.value)
     }
 
   }
