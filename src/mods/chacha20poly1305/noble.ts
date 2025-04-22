@@ -1,5 +1,6 @@
 import type * as ChaChaNoble from "@noble/ciphers/chacha"
 import { BytesOrCopiable, Copied } from "libs/copiable/index.js"
+import * as Abstract from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
 export function fromNoble(noble: typeof ChaChaNoble) {
@@ -9,11 +10,13 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     return "bytes" in bytes ? bytes.bytes : bytes
   }
 
-  class Cipher {
+  class Cipher extends Abstract.Cipher {
 
     constructor(
       readonly key: Uint8Array
-    ) { }
+    ) {
+      super()
+    }
 
     [Symbol.dispose]() { }
 
