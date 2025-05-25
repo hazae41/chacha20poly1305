@@ -1,4 +1,4 @@
-import { Box } from "@hazae41/box"
+import { Pin, Ref } from "@hazae41/box"
 import type { ChaCha20Poly1305Cipher, ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
 import { BytesOrCopiable } from "libs/copiable/index.js"
 import * as Abstract from "./abstract.js"
@@ -9,10 +9,12 @@ export function fromWasm(wasm: typeof ChaCha20Poly1305Wasm) {
 
   function getMemory(bytesOrCopiable: BytesOrCopiable) {
     if (bytesOrCopiable instanceof Memory)
-      return Box.createAsDropped(bytesOrCopiable)
+      return new Ref(bytesOrCopiable)
+
     if (bytesOrCopiable instanceof Uint8Array)
-      return Box.create(new Memory(bytesOrCopiable))
-    return Box.create(new Memory(bytesOrCopiable.bytes))
+      return Pin.from(new Memory(bytesOrCopiable))
+
+    return Pin.from(new Memory(bytesOrCopiable.bytes))
   }
 
   class Cipher extends Abstract.Cipher {
