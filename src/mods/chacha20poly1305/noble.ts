@@ -1,6 +1,5 @@
-import { Slice } from "@hazae41/memory"
+import { BytesOrMemory, Slice } from "@hazae41/memory"
 import type * as ChaChaNoble from "@noble/ciphers/chacha"
-import { BytesOrMemory } from "libs/copiable/index.js"
 import * as Abstract from "./abstract.js"
 import { Adapter } from "./adapter.js"
 

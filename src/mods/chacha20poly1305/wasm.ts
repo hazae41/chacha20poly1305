@@ -1,6 +1,6 @@
 import { Ref } from "@hazae41/box"
 import { type ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
-import { BytesOrMemory } from "libs/copiable/index.js"
+import { BytesOrMemory } from "@hazae41/memory"
 import * as Abstract from "./abstract.js"
 import { Adapter } from "./adapter.js"
 

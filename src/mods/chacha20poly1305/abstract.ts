@@ -1,5 +1,4 @@
-import { Memory } from "@hazae41/memory"
-import { BytesOrMemory } from "libs/copiable/index.js"
+import { BytesOrMemory, Memory } from "@hazae41/memory"
 
 export abstract class Messenger implements Disposable {
 
