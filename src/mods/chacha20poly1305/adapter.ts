@@ -1,5 +1,5 @@
 import { None, Nullable, Option } from "@hazae41/option"
-import { Cipher } from "./abstract.js"
+import { Messenger, Streamer } from "./abstract.js"
 
 let global: Option<Adapter> = new None()
 
@@ -12,5 +12,6 @@ export function set(value: Nullable<Adapter>) {
 }
 
 export interface Adapter {
-  readonly Cipher: typeof Cipher
+  readonly ChaCha20Cipher: typeof Streamer
+  readonly ChaCha20Poly1305Cipher: typeof Messenger
 }

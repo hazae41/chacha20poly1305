@@ -12,7 +12,7 @@ test("chacha", async () => {
   // const adapter = ChaCha20Poly1305.fromNoble()
 
   const key = crypto.getRandomValues(new Uint8Array(32)) as Uint8Array & { length: 32 }
-  using cipher = adapter.Cipher.importOrThrow(key)
+  using cipher = adapter.ChaCha20Poly1305Cipher.importOrThrow(key)
 
   const message = crypto.getRandomValues(new Uint8Array(256))
   const nonce = crypto.getRandomValues(new Uint8Array(12)) as Uint8Array & { length: 12 }
