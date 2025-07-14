@@ -12,6 +12,9 @@ export function set(value: Nullable<Adapter>) {
 }
 
 export interface Adapter {
+
   readonly ChaCha20Cipher: typeof Streamer
+
   readonly ChaCha20Poly1305Cipher: typeof Messenger
+
 }
