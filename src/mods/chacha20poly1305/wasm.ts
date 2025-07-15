@@ -1,6 +1,7 @@
 import { type ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
+
 import { Lengthed } from "@hazae41/lengthed"
-import * as Abstract from "./abstract.js"
+import * as Abstract from "./adapter.js"
 import { Adapter } from "./adapter.js"
 
 export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
@@ -27,7 +28,7 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
 
   }
 
-  class ChaCha20Cipher extends Abstract.Streamer {
+  class ChaCha20Cipher extends Abstract.ChaCha20Cipher {
 
     constructor(
       readonly inner: ChaCha20Poly1305Wasm.ChaCha20Cipher
@@ -53,7 +54,7 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
 
   }
 
-  class ChaCha20Poly1305Cipher extends Abstract.Messenger {
+  class ChaCha20Poly1305Cipher extends Abstract.ChaCha20Poly1305Cipher {
 
     constructor(
       readonly inner: ChaCha20Poly1305Wasm.ChaCha20Poly1305Cipher

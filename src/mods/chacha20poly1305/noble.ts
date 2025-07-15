@@ -1,6 +1,7 @@
-import { Lengthed } from "@hazae41/lengthed"
 import type * as ChaChaNoble from "@noble/ciphers/chacha"
-import * as Abstract from "./abstract.js"
+
+import { Lengthed } from "@hazae41/lengthed"
+import * as Abstract from "./adapter.js"
 import { Adapter } from "./adapter.js"
 
 export function fromNoble(noble: typeof ChaChaNoble) {
@@ -22,7 +23,7 @@ export function fromNoble(noble: typeof ChaChaNoble) {
 
   }
 
-  class ChaCha20Cipher extends Abstract.Streamer {
+  class ChaCha20Cipher extends Abstract.ChaCha20Cipher {
 
     counter = 0
 
@@ -45,7 +46,7 @@ export function fromNoble(noble: typeof ChaChaNoble) {
 
   }
 
-  class ChaCha20Poly1305Cipher extends Abstract.Messenger {
+  class ChaCha20Poly1305Cipher extends Abstract.ChaCha20Poly1305Cipher {
 
     constructor(
       readonly key: Uint8Array
