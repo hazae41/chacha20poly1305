@@ -1,4 +1,4 @@
-import { BytesOrMemory, Slice } from "@hazae41/memory"
+import { Lengthed } from "@hazae41/lengthed"
 import type * as ChaChaNoble from "@noble/ciphers/chacha"
 import * as Abstract from "./abstract.js"
 import { Adapter } from "./adapter.js"
@@ -6,10 +6,20 @@ import { Adapter } from "./adapter.js"
 export function fromNoble(noble: typeof ChaChaNoble) {
   const { chacha20, chacha20poly1305 } = noble
 
-  function getBytes(thing: BytesOrMemory) {
-    if (thing instanceof Uint8Array)
-      return thing
-    return thing.bytes
+  class Memory<N extends number = number> extends Abstract.Memory {
+
+    constructor(
+      readonly bytes: Uint8Array & Lengthed<N>
+    ) {
+      super()
+    }
+
+    static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>) {
+      return new Memory(bytes)
+    }
+
+    [Symbol.dispose]() { }
+
   }
 
   class ChaCha20Cipher extends Abstract.Streamer {
@@ -25,20 +35,12 @@ export function fromNoble(noble: typeof ChaChaNoble) {
 
     [Symbol.dispose]() { }
 
-    static create(key: Uint8Array, nonce: Uint8Array) {
-      return new ChaCha20Cipher(key, nonce)
+    static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
+      return new ChaCha20Cipher(key.bytes.slice(), nonce.bytes.slice())
     }
 
-    static importOrThrow(key: BytesOrMemory<32>, nonce: BytesOrMemory<12>) {
-      return new ChaCha20Cipher(getBytes(key).slice(), getBytes(nonce).slice())
-    }
-
-    applyOrThrow(message: BytesOrMemory) {
-      const mmessage = new Slice(new Uint8Array(getBytes(message)))
-
-      chacha20(this.key, this.nonce, mmessage.bytes, mmessage.bytes, this.counter++)
-
-      return mmessage
+    applyOrThrow(message: Memory) {
+      chacha20(this.key, this.nonce, message.bytes, message.bytes, this.counter++)
     }
 
   }
@@ -53,23 +55,19 @@ export function fromNoble(noble: typeof ChaChaNoble) {
 
     [Symbol.dispose]() { }
 
-    static create(key: Uint8Array) {
-      return new ChaCha20Poly1305Cipher(key)
+    static importOrThrow(key: Memory<32>) {
+      return new ChaCha20Poly1305Cipher(key.bytes.slice())
     }
 
-    static importOrThrow(key: BytesOrMemory<32>) {
-      return new ChaCha20Poly1305Cipher(getBytes(key).slice())
+    encryptOrThrow(message: Memory, nonce: Memory<12>) {
+      return new Memory(chacha20poly1305(this.key, nonce.bytes.slice()).encrypt(message.bytes))
     }
 
-    encryptOrThrow(message: BytesOrMemory, nonce: BytesOrMemory<12>) {
-      return new Slice(chacha20poly1305(this.key, getBytes(nonce).slice()).encrypt(getBytes(message)))
-    }
-
-    decryptOrThrow(message: BytesOrMemory, nonce: BytesOrMemory<12>) {
-      return new Slice(chacha20poly1305(this.key, getBytes(nonce).slice()).decrypt(getBytes(message)))
+    decryptOrThrow(message: Memory, nonce: Memory<12>) {
+      return new Memory(chacha20poly1305(this.key, nonce.bytes.slice()).decrypt(message.bytes))
     }
 
   }
 
-  return { ChaCha20Cipher, ChaCha20Poly1305Cipher } satisfies Adapter
+  return { Memory, ChaCha20Cipher, ChaCha20Poly1305Cipher } satisfies Adapter
 }

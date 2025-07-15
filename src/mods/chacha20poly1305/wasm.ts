@@ -1,25 +1,30 @@
-import { Ref } from "@hazae41/box"
 import { type ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
-import { BytesOrMemory } from "@hazae41/memory"
+import { Lengthed } from "@hazae41/lengthed"
 import * as Abstract from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
 export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
 
-  function getBytes(thing: BytesOrMemory) {
-    if (thing instanceof Uint8Array)
-      return thing
-    return thing.bytes
-  }
+  class Memory<N extends number = number> extends Abstract.Memory {
 
-  function getMemory(bytesOrCopiable: BytesOrMemory) {
-    if (bytesOrCopiable instanceof Wasm.Memory)
-      return Ref.with(bytesOrCopiable, () => { })
+    constructor(
+      readonly inner: ChaCha20Poly1305Wasm.Memory
+    ) {
+      super()
+    }
 
-    if (bytesOrCopiable instanceof Uint8Array)
-      return Ref.wrap(new Wasm.Memory(bytesOrCopiable))
+    static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>) {
+      return new Memory<N>(new Wasm.Memory(bytes))
+    }
 
-    return Ref.wrap(new Wasm.Memory(bytesOrCopiable.bytes))
+    [Symbol.dispose]() {
+      this.inner[Symbol.dispose]()
+    }
+
+    get bytes() {
+      return this.inner.bytes as Uint8Array & Lengthed<N>
+    }
+
   }
 
   class ChaCha20Cipher extends Abstract.Streamer {
@@ -38,19 +43,12 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
       return new ChaCha20Cipher(inner)
     }
 
-    static importOrThrow(key: BytesOrMemory<32>, nonce: BytesOrMemory<12>) {
-      using mkey = getMemory(key)
-      using mnonce = getMemory(nonce)
-
-      return new ChaCha20Cipher(new Wasm.ChaCha20Cipher(mkey.value, mnonce.value))
+    static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
+      return new ChaCha20Cipher(new Wasm.ChaCha20Cipher(key.inner, nonce.inner))
     }
 
-    applyOrThrow(message: BytesOrMemory) {
-      const mmessage = new Wasm.Memory(getBytes(message))
-
-      this.inner.apply_keystream(mmessage)
-
-      return mmessage
+    applyOrThrow(message: Memory) {
+      this.inner.apply_keystream(message.inner)
     }
 
   }
@@ -71,27 +69,19 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
       return new ChaCha20Poly1305Cipher(inner)
     }
 
-    static importOrThrow(key: BytesOrMemory<32>) {
-      using mkey = getMemory(key)
-
-      return new ChaCha20Poly1305Cipher(new Wasm.ChaCha20Poly1305Cipher(mkey.value))
+    static importOrThrow(key: Memory<32>) {
+      return new ChaCha20Poly1305Cipher(new Wasm.ChaCha20Poly1305Cipher(key.inner))
     }
 
-    encryptOrThrow(message: BytesOrMemory, nonce: BytesOrMemory<12>) {
-      using mmessage = getMemory(message)
-      using mnonce = getMemory(nonce)
-
-      return this.inner.encrypt(mmessage.value, mnonce.value)
+    encryptOrThrow(message: Memory, nonce: Memory<12>) {
+      return new Memory(this.inner.encrypt(message.inner, nonce.inner))
     }
 
-    decryptOrThrow(message: BytesOrMemory, nonce: BytesOrMemory<12>) {
-      using mmessage = getMemory(message)
-      using mnonce = getMemory(nonce)
-
-      return this.inner.decrypt(mmessage.value, mnonce.value)
+    decryptOrThrow(message: Memory, nonce: Memory<12>) {
+      return new Memory(this.inner.decrypt(message.inner, nonce.inner))
     }
 
   }
 
-  return { ChaCha20Cipher, ChaCha20Poly1305Cipher } satisfies Adapter
+  return { Memory, ChaCha20Cipher, ChaCha20Poly1305Cipher } satisfies Adapter
 }
