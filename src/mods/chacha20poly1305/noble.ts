@@ -1,7 +1,7 @@
 import type * as ChaChaNoble from "@noble/ciphers/chacha"
 
 import { Lengthed } from "@hazae41/lengthed"
-import * as Abstract from "./adapter.js"
+import { Abstract } from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
 export function fromNoble(noble: typeof ChaChaNoble) {

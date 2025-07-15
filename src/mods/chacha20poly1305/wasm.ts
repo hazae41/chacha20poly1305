@@ -1,7 +1,7 @@
 import { type ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
 
 import { Lengthed } from "@hazae41/lengthed"
-import * as Abstract from "./adapter.js"
+import { Abstract } from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
 export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
