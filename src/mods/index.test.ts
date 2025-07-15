@@ -21,5 +21,5 @@ test("chacha", async () => {
   using encrypted = cipher.encryptOrThrow(message, nonce)
   using decrypted = cipher.decryptOrThrow(encrypted, nonce)
 
-  assert(message.toString() === decrypted.bytes.toString())
+  assert(message.bytes.toString() === decrypted.bytes.toString())
 })
