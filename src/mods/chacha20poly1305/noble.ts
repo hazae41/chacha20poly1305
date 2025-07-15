@@ -15,6 +15,10 @@ export function fromNoble(noble: typeof ChaChaNoble) {
       super()
     }
 
+    static fromOrThrow<N extends number = number>(memory: Memory<N>) {
+
+    }
+
     static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>) {
       return new Memory(bytes)
     }

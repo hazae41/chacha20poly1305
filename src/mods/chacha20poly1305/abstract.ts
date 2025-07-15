@@ -6,6 +6,10 @@ export namespace Abstract {
 
     constructor(..._: any[]) { }
 
+    static fromOrThrow<N extends number = number>(memory: Memory<N>): Memory<N> {
+      throw new Error("Not implemented")
+    }
+
     static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>): Memory<N> {
       throw new Error("Not implemented")
     }
