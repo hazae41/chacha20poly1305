@@ -6,8 +6,10 @@ import { Adapter } from "./adapter.js"
 export function fromNoble(noble: typeof ChaChaNoble) {
   const { chacha20, chacha20poly1305 } = noble
 
-  function getBytes(bytes: BytesOrMemory) {
-    return "bytes" in bytes ? bytes.bytes : bytes
+  function getBytes(thing: BytesOrMemory) {
+    if (thing instanceof Uint8Array)
+      return thing
+    return thing.bytes
   }
 
   class ChaCha20Cipher extends Abstract.Streamer {
@@ -32,9 +34,11 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     }
 
     applyOrThrow(message: BytesOrMemory) {
-      const input = getBytes(message)
+      const mmessage = new Slice(new Uint8Array(getBytes(message)))
 
-      chacha20(this.key, this.nonce, input, input, this.counter++)
+      chacha20(this.key, this.nonce, mmessage.bytes, mmessage.bytes, this.counter++)
+
+      return mmessage
     }
 
   }

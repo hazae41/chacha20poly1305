@@ -6,6 +6,12 @@ import { Adapter } from "./adapter.js"
 
 export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
 
+  function getBytes(thing: BytesOrMemory) {
+    if (thing instanceof Uint8Array)
+      return thing
+    return thing.bytes
+  }
+
   function getMemory(bytesOrCopiable: BytesOrMemory) {
     if (bytesOrCopiable instanceof Wasm.Memory)
       return Ref.with(bytesOrCopiable, () => { })
@@ -40,9 +46,11 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
     }
 
     applyOrThrow(message: BytesOrMemory) {
-      using mmessage = getMemory(message)
+      const mmessage = new Wasm.Memory(getBytes(message))
 
-      this.inner.apply_keystream(mmessage.value)
+      this.inner.apply_keystream(mmessage)
+
+      return mmessage
     }
 
   }

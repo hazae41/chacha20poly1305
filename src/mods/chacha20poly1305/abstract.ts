@@ -26,6 +26,6 @@ export abstract class Streamer implements Disposable {
 
   abstract [Symbol.dispose](): void
 
-  abstract applyOrThrow(message: BytesOrMemory): void
+  abstract applyOrThrow(message: BytesOrMemory): Memory
 
 }
