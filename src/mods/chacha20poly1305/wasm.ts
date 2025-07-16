@@ -49,11 +49,7 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
     }
 
     [Symbol.dispose]() {
-      using _ = this.inner
-    }
-
-    static create(inner: ChaCha20Poly1305Wasm.ChaCha20Cipher) {
-      return new ChaCha20Cipher(inner)
+      this.inner[Symbol.dispose]()
     }
 
     static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
@@ -75,11 +71,7 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
     }
 
     [Symbol.dispose]() {
-      using _ = this.inner
-    }
-
-    static create(inner: ChaCha20Poly1305Wasm.ChaCha20Poly1305Cipher) {
-      return new ChaCha20Poly1305Cipher(inner)
+      this.inner[Symbol.dispose]()
     }
 
     static importOrThrow(key: Memory<32>) {
