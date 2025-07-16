@@ -18,8 +18,6 @@ test("chacha", async () => {
   using message = Memory.importOrThrow(crypto.getRandomValues(new Uint8Array(256)))
   using nonce = Memory.importOrThrow(crypto.getRandomValues(new Uint8Array(12)) as Uint8Array & { length: 12 })
 
-  using test = Memory.fromOrThrow(message)
-
   using encrypted = cipher.encryptOrThrow(message, nonce)
   using decrypted = cipher.decryptOrThrow(encrypted, nonce)
 
