@@ -5,16 +5,6 @@ export namespace Abstract {
 
   export abstract class Memory<N extends number = number> {
 
-    constructor(..._: any[]) { }
-
-    static fromOrThrow<N extends number = number>(memory: Memory<N>): Ownable<Memory<N>> {
-      throw new Error("Not implemented")
-    }
-
-    static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>): Memory<N> {
-      throw new Error("Not implemented")
-    }
-
     abstract [Symbol.dispose](): void
 
     abstract readonly inner: unknown
@@ -23,13 +13,19 @@ export namespace Abstract {
 
   }
 
-  export abstract class ChaCha20Cipher implements Disposable {
+  export namespace Memory {
 
-    constructor(..._: any[]) { }
+    export interface Static {
 
-    static importOrThrow(key: Memory<32>, nonce: Memory<12>): ChaCha20Cipher {
-      throw new Error("Not implemented")
+      fromOrThrow<N extends number>(memory: Memory<N>): Ownable<Memory<N>>
+
+      importOrThrow<N extends number>(bytes: Uint8Array & Lengthed<N>): Memory<N>
+
     }
+
+  }
+
+  export abstract class ChaCha20Cipher implements Disposable {
 
     abstract [Symbol.dispose](): void
 
@@ -37,19 +33,33 @@ export namespace Abstract {
 
   }
 
-  export abstract class ChaCha20Poly1305Cipher implements Disposable {
+  export namespace ChaCha20Cipher {
 
-    constructor(..._: any[]) { }
+    export interface Static {
 
-    static importOrThrow(key: Memory<32>): ChaCha20Poly1305Cipher {
-      throw new Error("Not implemented")
+      importOrThrow(key: Memory<32>, nonce: Memory<12>): ChaCha20Cipher
+
     }
+
+  }
+
+  export abstract class ChaCha20Poly1305Cipher implements Disposable {
 
     abstract [Symbol.dispose](): void
 
     abstract encryptOrThrow(message: Memory, nonce: Memory<12>): Memory
 
     abstract decryptOrThrow(message: Memory, nonce: Memory<12>): Memory
+
+  }
+
+  export namespace ChaCha20Poly1305Cipher {
+
+    export interface Static {
+
+      importOrThrow(key: Memory<32>): ChaCha20Poly1305Cipher
+
+    }
 
   }
 

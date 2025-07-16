@@ -19,6 +19,8 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     static fromOrThrow<N extends number = number>(memory: Abstract.Memory<N>) {
       if (memory instanceof Memory)
         return new Unowned(memory)
+      if (memory.inner instanceof Uint8Array)
+        return new Unowned(new Memory(memory.inner))
 
       const inner = new Uint8Array(memory.bytes)
 
@@ -51,10 +53,16 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     [Symbol.dispose]() { }
 
     static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
+      if (key instanceof Memory === false)
+        throw new Error()
+      if (nonce instanceof Memory === false)
+        throw new Error()
       return new ChaCha20Cipher(new Uint8Array(key.bytes), new Uint8Array(nonce.bytes))
     }
 
     applyOrThrow(message: Memory) {
+      if (message instanceof Memory === false)
+        throw new Error()
       chacha20(this.key, this.nonce, message.bytes, message.bytes, this.counter++)
     }
 
@@ -71,14 +79,22 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     [Symbol.dispose]() { }
 
     static importOrThrow(key: Memory<32>) {
+      if (key instanceof Memory === false)
+        throw new Error()
       return new ChaCha20Poly1305Cipher(new Uint8Array(key.bytes))
     }
 
     encryptOrThrow(message: Memory, nonce: Memory<12>) {
+      if (message instanceof Memory === false)
+        throw new Error()
+      if (nonce instanceof Memory === false)
+        throw new Error()
       return new Memory(chacha20poly1305(this.key, nonce.bytes).encrypt(message.bytes))
     }
 
     decryptOrThrow(message: Memory, nonce: Memory<12>) {
+      if (message instanceof Memory === false)
+        throw new Error()
       return new Memory(chacha20poly1305(this.key, nonce.bytes).decrypt(message.bytes))
     }
 

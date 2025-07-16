@@ -13,10 +13,10 @@ export function set(value: Nullable<Adapter>) {
 
 export interface Adapter {
 
-  readonly Memory: typeof Abstract.Memory
+  readonly Memory: Abstract.Memory.Static
 
-  readonly ChaCha20Cipher: typeof Abstract.ChaCha20Cipher
+  readonly ChaCha20Cipher: Abstract.ChaCha20Cipher.Static
 
-  readonly ChaCha20Poly1305Cipher: typeof Abstract.ChaCha20Poly1305Cipher
+  readonly ChaCha20Poly1305Cipher: Abstract.ChaCha20Poly1305Cipher.Static
 
 }

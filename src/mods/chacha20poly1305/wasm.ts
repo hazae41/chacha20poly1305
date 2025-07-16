@@ -53,10 +53,16 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
     }
 
     static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
+      if (key instanceof Memory === false)
+        throw new Error()
+      if (nonce instanceof Memory === false)
+        throw new Error()
       return new ChaCha20Cipher(new Wasm.ChaCha20Cipher(key.inner, nonce.inner))
     }
 
     applyOrThrow(message: Memory) {
+      if (message instanceof Memory === false)
+        throw new Error()
       this.inner.apply_keystream(message.inner)
     }
 
@@ -75,14 +81,22 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
     }
 
     static importOrThrow(key: Memory<32>) {
+      if (key instanceof Memory === false)
+        throw new Error()
       return new ChaCha20Poly1305Cipher(new Wasm.ChaCha20Poly1305Cipher(key.inner))
     }
 
     encryptOrThrow(message: Memory, nonce: Memory<12>) {
+      if (message instanceof Memory === false)
+        throw new Error()
+      if (nonce instanceof Memory === false)
+        throw new Error()
       return new Memory(this.inner.encrypt(message.inner, nonce.inner))
     }
 
     decryptOrThrow(message: Memory, nonce: Memory<12>) {
+      if (message instanceof Memory === false)
+        throw new Error()
       return new Memory(this.inner.decrypt(message.inner, nonce.inner))
     }
 
