@@ -1,6 +1,7 @@
 import { type ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
 
 import { Lengthed } from "@hazae41/lengthed"
+import { Ownable, Owned, Unowned } from "libs/ownable/index.js"
 import { Abstract } from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
@@ -14,7 +15,18 @@ export function fromWasm(Wasm: typeof ChaCha20Poly1305Wasm) {
       super()
     }
 
-    static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>) {
+    static fromOrThrow<N extends number = number>(memory: Abstract.Memory<N>): Ownable<Memory<N>> {
+      if (memory instanceof Memory)
+        return new Unowned(memory)
+      if (memory.inner instanceof Wasm.Memory)
+        return new Unowned(new Memory(memory.inner))
+
+      const inner = new Wasm.Memory(memory.bytes)
+
+      return new Owned(new Memory<N>(inner))
+    }
+
+    static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>): Memory<N> {
       return new Memory<N>(new Wasm.Memory(bytes))
     }
 

@@ -1,4 +1,5 @@
 import { Lengthed } from "@hazae41/lengthed"
+import { Ownable } from "libs/ownable/index.js"
 
 export namespace Abstract {
 
@@ -6,7 +7,7 @@ export namespace Abstract {
 
     constructor(..._: any[]) { }
 
-    static fromOrThrow<N extends number = number>(memory: Memory<N>): Memory<N> {
+    static fromOrThrow<N extends number = number>(memory: Memory<N>): Ownable<Memory<N>> {
       throw new Error("Not implemented")
     }
 
@@ -15,6 +16,8 @@ export namespace Abstract {
     }
 
     abstract [Symbol.dispose](): void
+
+    abstract readonly inner: unknown
 
     abstract readonly bytes: Uint8Array & Lengthed<N>
 

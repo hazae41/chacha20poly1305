@@ -1,6 +1,7 @@
 import type * as ChaChaNoble from "@noble/ciphers/chacha"
 
 import { Lengthed } from "@hazae41/lengthed"
+import { Owned, Unowned } from "libs/ownable/index.js"
 import { Abstract } from "./abstract.js"
 import { Adapter } from "./adapter.js"
 
@@ -10,20 +11,29 @@ export function fromNoble(noble: typeof ChaChaNoble) {
   class Memory<N extends number = number> extends Abstract.Memory {
 
     constructor(
-      readonly bytes: Uint8Array & Lengthed<N>
+      readonly inner: Uint8Array
     ) {
       super()
     }
 
-    static fromOrThrow<N extends number = number>(memory: Memory<N>) {
+    static fromOrThrow<N extends number = number>(memory: Abstract.Memory<N>) {
+      if (memory instanceof Memory)
+        return new Unowned(memory)
 
+      const inner = new Uint8Array(memory.bytes)
+
+      return new Owned(new Memory<N>(inner))
     }
 
     static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>) {
-      return new Memory(bytes)
+      return new Memory<N>(new Uint8Array(bytes))
     }
 
     [Symbol.dispose]() { }
+
+    get bytes() {
+      return this.inner as Uint8Array & Lengthed<N>
+    }
 
   }
 
@@ -41,7 +51,7 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     [Symbol.dispose]() { }
 
     static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
-      return new ChaCha20Cipher(key.bytes.slice(), nonce.bytes.slice())
+      return new ChaCha20Cipher(new Uint8Array(key.bytes), new Uint8Array(nonce.bytes))
     }
 
     applyOrThrow(message: Memory) {
@@ -61,15 +71,15 @@ export function fromNoble(noble: typeof ChaChaNoble) {
     [Symbol.dispose]() { }
 
     static importOrThrow(key: Memory<32>) {
-      return new ChaCha20Poly1305Cipher(key.bytes.slice())
+      return new ChaCha20Poly1305Cipher(new Uint8Array(key.bytes))
     }
 
     encryptOrThrow(message: Memory, nonce: Memory<12>) {
-      return new Memory(chacha20poly1305(this.key, nonce.bytes.slice()).encrypt(message.bytes))
+      return new Memory(chacha20poly1305(this.key, nonce.bytes).encrypt(message.bytes))
     }
 
     decryptOrThrow(message: Memory, nonce: Memory<12>) {
-      return new Memory(chacha20poly1305(this.key, nonce.bytes.slice()).decrypt(message.bytes))
+      return new Memory(chacha20poly1305(this.key, nonce.bytes).decrypt(message.bytes))
     }
 
   }
