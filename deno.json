@@ -1,0 +1,21 @@
+{
+  "name": "@hazae41/chacha20poly1305",
+  "version": "2.0.2",
+  "imports": {
+    "@/": "./src/",
+    "@hazae41/chacha20poly1305-wasm": "jsr:@hazae41/chacha20poly1305-wasm@^2.0.0",
+    "@hazae41/phobos": "jsr:@hazae41/phobos@^2.0.16",
+    "@hazae41/result-and-option": "jsr:@hazae41/result-and-option@^2.0.10",
+    "@hazae41/tscousin": "jsr:@hazae41/tscousin@^1.0.28"
+  },
+  "exports": {
+    ".": "./src/mod.ts"
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-namespace"
+      ]
+    }
+  }
+}

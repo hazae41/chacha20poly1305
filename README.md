@@ -3,10 +3,14 @@
 ChaCha20Poly1305 adapter for WebAssembly and JS implementations
 
 ```bash
-npm i @hazae41/chacha20poly1305
+npm install @hazae41/chacha20poly1305
 ```
 
-[**Node Package 📦**](https://www.npmjs.com/package/@hazae41/chacha20poly1305)
+```bash
+deno install jsr:@hazae41/chacha20poly1305
+```
+
+[**📦 NPM**](https://www.npmjs.com/package/@hazae41/chacha20poly1305) • [**📦 JSR**](https://jsr.io/@hazae41/chacha20poly1305)
 
 ## Features
 
@@ -19,16 +23,16 @@ npm i @hazae41/chacha20poly1305
 ### WebAssembly
 
 ```bash
-npm i @hazae41/chacha20poly1305.wasm
+npm i @hazae41/chacha20poly1305-wasm
 ```
 
 ```typescript
-import { ChaCha20Poly1305 } from "@hazae41/chacha20poly1305"
-import { ChaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305.wasm"
+import { chaCha20Poly1305 } from "@hazae41/chacha20poly1305"
+import { chaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305-wasm"
 
-await ChaCha20Poly1305Wasm.initBundled()
+await chaCha20Poly1305Wasm.load() // or chaCha20Poly1305Wasm.loadSync() 
 
-ChaCha20Poly1305.set(ChaCha20Poly1305.fromWasm(ChaCha20Poly1305Wasm))
+chaCha20Poly1305.set(chaCha20Poly1305.fromWasm(chaCha20Poly1305Wasm))
 ```
 
 ### Noble (JavaScript)
@@ -38,8 +42,8 @@ npm i @noble/ciphers
 ```
 
 ```typescript
-import { ChaCha20Poly1305 } from "@hazae41/chacha20poly1305"
-import * as ChaChaNoble from "@noble/ciphers/chacha"
+import { chaCha20Poly1305 } from "@hazae41/chacha20poly1305"
+import * as chaChaNoble from "@noble/ciphers/chacha"
 
-ChaCha20Poly1305.set(ChaCha20Poly1305.fromNoble(ChaChaNoble))
+chaCha20Poly1305.set(chaCha20Poly1305.fromNoble(chaChaNoble))
 ```

@@ -1,9 +1,12 @@
-import { Lengthed } from "@hazae41/lengthed"
-import { Ownable } from "libs/ownable/index.js"
+import type { Lengthed } from "@/libs/lengthed/mod.ts";
 
 export namespace Abstract {
 
-  export abstract class Memory<N extends number = number> {
+  export type MemoryLike<N extends number = number> =
+    | Memory<N>
+    | Memory<N>["bytes"]
+
+  export abstract class Memory<N extends number = number> implements Disposable {
 
     abstract [Symbol.dispose](): void
 
@@ -17,9 +20,7 @@ export namespace Abstract {
 
     export interface Static {
 
-      fromOrThrow<N extends number>(memory: Memory<N>): Ownable<Memory<N>>
-
-      importOrThrow<N extends number>(bytes: Uint8Array & Lengthed<N>): Memory<N>
+      fromOrThrow<N extends number>(memory: MemoryLike<N>): Memory<N>
 
     }
 

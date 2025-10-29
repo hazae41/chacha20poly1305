@@ -1,5 +1,6 @@
-import { None, Nullable, Option } from "@hazae41/option"
-import { Abstract } from "./abstract.js"
+import type { Nullable } from "@/libs/nullable/mod.ts";
+import { None, Option } from "@hazae41/result-and-option";
+import type { Abstract } from "../abstract/abstract.ts";
 
 let global: Option<Adapter> = new None()
 

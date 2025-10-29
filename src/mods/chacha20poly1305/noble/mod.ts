@@ -1,11 +1,10 @@
-import type * as ChaChaNoble from "@noble/ciphers/chacha"
+import type * as chaChaNoble from "@noble/ciphers/chacha.js";
 
-import { Lengthed } from "@hazae41/lengthed"
-import { Owned, Unowned } from "libs/ownable/index.js"
-import { Abstract } from "./abstract.js"
-import { Adapter } from "./adapter.js"
+import type { Lengthed } from "@/libs/lengthed/mod.ts";
+import { Abstract } from "../abstract/abstract.ts";
+import type { Adapter } from "../adapter/mod.ts";
 
-export function fromNoble(noble: typeof ChaChaNoble) {
+export function fromNoble(noble: typeof chaChaNoble) {
   const { chacha20, chacha20poly1305 } = noble
 
   class Memory<N extends number = number> extends Abstract.Memory {
@@ -16,22 +15,20 @@ export function fromNoble(noble: typeof ChaChaNoble) {
       super()
     }
 
-    static fromOrThrow<N extends number = number>(memory: Abstract.Memory<N>) {
-      if (memory instanceof Memory)
-        return new Unowned(memory)
-      if (memory.inner instanceof Uint8Array)
-        return new Unowned(new Memory(memory.inner))
-
-      const inner = new Uint8Array(memory.bytes)
-
-      return new Owned(new Memory<N>(inner))
-    }
-
-    static importOrThrow<N extends number = number>(bytes: Uint8Array & Lengthed<N>) {
-      return new Memory<N>(new Uint8Array(bytes))
-    }
-
     [Symbol.dispose]() { }
+
+    static fromOrThrow<N extends number = number>(memory: Abstract.MemoryLike<N>): Memory<N> {
+      if (memory instanceof Memory)
+        return memory
+
+      if (memory instanceof Uint8Array)
+        return new Memory<N>(memory)
+
+      if (memory.inner instanceof Uint8Array)
+        return new Memory<N>(memory.inner)
+
+      return new Memory<N>(new Uint8Array(memory.bytes))
+    }
 
     get bytes() {
       return this.inner as Uint8Array & Lengthed<N>
@@ -57,7 +54,7 @@ export function fromNoble(noble: typeof ChaChaNoble) {
         throw new Error()
       if (nonce instanceof Memory === false)
         throw new Error()
-      return new ChaCha20Cipher(new Uint8Array(key.bytes), new Uint8Array(nonce.bytes))
+      return new ChaCha20Cipher(key.bytes, nonce.bytes)
     }
 
     applyOrThrow(message: Memory) {
