@@ -9,6 +9,7 @@
     "npm:@hazae41/phobos@^2.0.16": "2.0.16",
     "npm:@hazae41/result-and-option@^2.0.10": "2.0.10",
     "npm:@hazae41/tscousin@^1.0.28": "1.0.28",
+    "npm:@noble/ciphers@^2.0.1": "2.0.1",
     "npm:@types/node@*": "24.2.0",
     "npm:typescript@^5.9.3": "5.9.3"
   },
@@ -45,6 +46,9 @@
     "@hazae41/tscousin@1.0.28": {
       "integrity": "sha512-Wrg/66m0hLexrifpzJ5a/D7Jzb7FhLzBWrCFAgjZa+DIU8prA5rX4MwD5K34UZ6jsYBRZsYwNeVEYRqOIJHOEQ==",
       "bin": true
+    },
+    "@noble/ciphers@2.0.1": {
+      "integrity": "sha512-xHK3XHPUW8DTAobU+G0XT+/w+JLM7/8k1UFdB5xg/zTFPnFCobhftzw8wl4Lw2aq/Rvir5pxfZV5fEazmeCJ2g=="
     },
     "@types/node@24.2.0": {
       "integrity": "sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==",
