@@ -73,6 +73,7 @@
         "npm:@hazae41/phobos@^2.0.16",
         "npm:@hazae41/result-and-option@^2.0.10",
         "npm:@hazae41/tscousin@^1.0.28",
+        "npm:@noble/ciphers@^2.0.1",
         "npm:typescript@^5.9.3"
       ]
     }

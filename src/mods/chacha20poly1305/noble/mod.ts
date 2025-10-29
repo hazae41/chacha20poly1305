@@ -1,10 +1,10 @@
 import type * as chaChaNoble from "@noble/ciphers/chacha.js";
 
 import type { Lengthed } from "@/libs/lengthed/mod.ts";
-import { Abstract } from "../abstract/abstract.ts";
+import { Abstract } from "../abstract/mod.ts";
 import type { Adapter } from "../adapter/mod.ts";
 
-export function fromNoble(noble: typeof chaChaNoble) {
+export function fromNoble(noble: typeof chaChaNoble): Adapter {
   const { chacha20, chacha20poly1305 } = noble
 
   class Memory<N extends number = number> extends Abstract.Memory {
@@ -97,5 +97,5 @@ export function fromNoble(noble: typeof chaChaNoble) {
 
   }
 
-  return { Memory, ChaCha20Cipher, ChaCha20Poly1305Cipher } satisfies Adapter
+  return { Memory, ChaCha20Cipher, ChaCha20Poly1305Cipher }
 }

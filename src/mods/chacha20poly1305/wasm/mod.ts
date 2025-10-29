@@ -1,10 +1,10 @@
 import type { chaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305-wasm";
 
 import type { Lengthed } from "@/libs/lengthed/mod.ts";
-import { Abstract } from "../abstract/abstract.ts";
+import { Abstract } from "../abstract/mod.ts";
 import type { Adapter } from "../adapter/mod.ts";
 
-export function fromWasm(wasm: typeof chaCha20Poly1305Wasm) {
+export function fromWasm(wasm: typeof chaCha20Poly1305Wasm): Adapter {
 
   class Memory<N extends number = number> extends Abstract.Memory {
 
@@ -99,5 +99,5 @@ export function fromWasm(wasm: typeof chaCha20Poly1305Wasm) {
 
   }
 
-  return { Memory, ChaCha20Cipher, ChaCha20Poly1305Cipher } satisfies Adapter
+  return { Memory, ChaCha20Cipher, ChaCha20Poly1305Cipher }
 }
