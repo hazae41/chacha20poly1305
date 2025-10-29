@@ -1,6 +1,6 @@
 {
   "name": "@hazae41/chacha20poly1305",
-  "version": "2.0.2",
+  "version": "2.0.0",
   "imports": {
     "@/": "./src/",
     "@hazae41/chacha20poly1305-wasm": "jsr:@hazae41/chacha20poly1305-wasm@^2.0.0",
