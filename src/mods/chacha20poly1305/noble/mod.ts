@@ -1,13 +1,12 @@
 import type * as chaChaNoble from "@noble/ciphers/chacha.js";
 
-import type { Lengthed } from "@/libs/lengthed/mod.ts";
 import { Abstract } from "../abstract/mod.ts";
 import type { Adapter } from "../adapter/mod.ts";
 
 export function fromNoble(noble: typeof chaChaNoble): Adapter {
   const { chacha20, chacha20poly1305 } = noble
 
-  class Memory<N extends number = number> extends Abstract.Memory {
+  class Memory extends Abstract.Memory {
 
     constructor(
       readonly inner: Uint8Array
@@ -17,21 +16,21 @@ export function fromNoble(noble: typeof chaChaNoble): Adapter {
 
     [Symbol.dispose]() { }
 
-    static fromOrThrow<N extends number = number>(memory: Abstract.MemoryLike<N>): Memory<N> {
+    static fromOrThrow(memory: Abstract.MemoryLike): Memory {
       if (memory instanceof Memory)
         return memory
 
       if (memory instanceof Uint8Array)
-        return new Memory<N>(memory)
+        return new Memory(memory)
 
       if (memory.inner instanceof Uint8Array)
-        return new Memory<N>(memory.inner)
+        return new Memory(memory.inner)
 
-      return new Memory<N>(new Uint8Array(memory.bytes))
+      return new Memory(new Uint8Array(memory.bytes))
     }
 
     get bytes() {
-      return this.inner as Uint8Array & Lengthed<N>
+      return this.inner
     }
 
   }
@@ -49,7 +48,7 @@ export function fromNoble(noble: typeof chaChaNoble): Adapter {
 
     [Symbol.dispose]() { }
 
-    static importOrThrow(key: Memory<32>, nonce: Memory<12>) {
+    static importOrThrow(key: Memory, nonce: Memory) {
       if (key instanceof Memory === false)
         throw new Error()
       if (nonce instanceof Memory === false)
@@ -75,13 +74,13 @@ export function fromNoble(noble: typeof chaChaNoble): Adapter {
 
     [Symbol.dispose]() { }
 
-    static importOrThrow(key: Memory<32>) {
+    static importOrThrow(key: Memory) {
       if (key instanceof Memory === false)
         throw new Error()
       return new ChaCha20Poly1305Cipher(new Uint8Array(key.bytes))
     }
 
-    encryptOrThrow(message: Memory, nonce: Memory<12>) {
+    encryptOrThrow(message: Memory, nonce: Memory) {
       if (message instanceof Memory === false)
         throw new Error()
       if (nonce instanceof Memory === false)
@@ -89,7 +88,7 @@ export function fromNoble(noble: typeof chaChaNoble): Adapter {
       return new Memory(chacha20poly1305(this.key, nonce.bytes).encrypt(message.bytes))
     }
 
-    decryptOrThrow(message: Memory, nonce: Memory<12>) {
+    decryptOrThrow(message: Memory, nonce: Memory) {
       if (message instanceof Memory === false)
         throw new Error()
       return new Memory(chacha20poly1305(this.key, nonce.bytes).decrypt(message.bytes))

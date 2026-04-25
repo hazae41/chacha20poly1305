@@ -1,18 +1,14 @@
-import type { Lengthed } from "@/libs/lengthed/mod.ts";
-
 export namespace Abstract {
 
-  export type MemoryLike<N extends number = number> =
-    | Memory<N>
-    | Memory<N>["bytes"]
+  export type MemoryLike = Memory | Uint8Array
 
-  export abstract class Memory<N extends number = number> implements Disposable {
+  export abstract class Memory implements Disposable {
 
     abstract [Symbol.dispose](): void
 
     abstract readonly inner: unknown
 
-    abstract readonly bytes: Uint8Array & Lengthed<N>
+    abstract readonly bytes: Uint8Array
 
   }
 
@@ -20,7 +16,7 @@ export namespace Abstract {
 
     export interface Static {
 
-      fromOrThrow<N extends number>(memory: MemoryLike<N>): Memory<N>
+      fromOrThrow(memory: MemoryLike): Memory
 
     }
 
@@ -38,7 +34,7 @@ export namespace Abstract {
 
     export interface Static {
 
-      importOrThrow(key: Memory<32>, nonce: Memory<12>): ChaCha20Cipher
+      importOrThrow(key: Memory, nonce: Memory): ChaCha20Cipher
 
     }
 
@@ -48,9 +44,9 @@ export namespace Abstract {
 
     abstract [Symbol.dispose](): void
 
-    abstract encryptOrThrow(message: Memory, nonce: Memory<12>): Memory
+    abstract encryptOrThrow(message: Memory, nonce: Memory): Memory
 
-    abstract decryptOrThrow(message: Memory, nonce: Memory<12>): Memory
+    abstract decryptOrThrow(message: Memory, nonce: Memory): Memory
 
   }
 
@@ -58,7 +54,7 @@ export namespace Abstract {
 
     export interface Static {
 
-      importOrThrow(key: Memory<32>): ChaCha20Poly1305Cipher
+      importOrThrow(key: Memory): ChaCha20Poly1305Cipher
 
     }
 
