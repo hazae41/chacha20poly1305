@@ -7,8 +7,6 @@
   "author": "hazae41",
   "scripts": {
     "examine": "deno lint ./src && deno check ./src && deno test ./src",
-    "version": "deno -RW ./x.vsync.ts && git add deno.json",
-    "prepare": "deno -RW ./x.dsync.ts && deno install",
     "prepack": "rm -rf ./out && tsc && tscousin"
   },
   "files": [
@@ -21,11 +19,10 @@
     }
   },
   "devDependencies": {
-    "@hazae41/chacha20poly1305-wasm": "^2.0.0",
+    "@hazae41/chacha20poly1305-wasm": "^2.0.2",
     "@hazae41/phobos": "^2.0.16",
     "@hazae41/tscousin": "^1.0.28",
-    "@noble/ciphers": "^2.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "keywords": [
     "chacha20poly1305",
@@ -36,6 +33,7 @@
     "esmodules"
   ],
   "dependencies": {
-    "@hazae41/result-and-option": "^2.0.10"
+    "@hazae41/result-and-option": "^2.0.10",
+    "@noble/ciphers": "^2.2.0"
   }
 }

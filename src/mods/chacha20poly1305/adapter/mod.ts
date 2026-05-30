@@ -1,8 +1,9 @@
 import type { Nullable } from "@/libs/nullable/mod.ts";
-import { None, Option } from "@hazae41/result-and-option";
+import { Option, Some } from "@hazae41/result-and-option";
 import type { Abstract } from "../abstract/mod.ts";
+import { fromNoble } from "../noble/mod.ts";
 
-let global: Option<Adapter> = new None()
+let global: Option<Adapter> = new Some(fromNoble())
 
 export function get(): Option<Adapter> {
   return global

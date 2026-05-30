@@ -1,3 +1,5 @@
+// deno-lint-ignore-file no-namespace
+
 export namespace Abstract {
 
   export type MemoryLike = Memory | Uint8Array
