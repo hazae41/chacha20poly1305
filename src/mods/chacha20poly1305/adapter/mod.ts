@@ -1,9 +1,11 @@
 import type { Nullable } from "@/libs/nullable/mod.ts";
-import { Option, Some } from "@hazae41/result-and-option";
+import { Option, Result } from "@hazae41/result-and-option";
 import type { Abstract } from "../abstract/mod.ts";
-import { fromNoble } from "../noble/mod.ts";
+import { fromWasm } from "../wasm/mod.ts";
 
-let global: Option<Adapter> = new Some(fromNoble())
+let global: Option<Adapter> = await Result.runAndWrap(async () => {
+  return await import("@hazae41/chacha20poly1305-wasm").then(x => fromWasm(x.chaCha20Poly1305Wasm))
+}).then(r => r.ok())
 
 export function get(): Option<Adapter> {
   return global

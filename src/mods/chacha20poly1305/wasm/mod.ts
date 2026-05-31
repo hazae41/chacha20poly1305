@@ -3,7 +3,8 @@ import type { chaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305-wasm";
 import { Abstract } from "../abstract/mod.ts";
 import type { Adapter } from "../adapter/mod.ts";
 
-export function fromWasm(wasm: typeof chaCha20Poly1305Wasm): Adapter {
+export async function fromWasm(wasm: typeof chaCha20Poly1305Wasm): Promise<Adapter> {
+  await wasm.load()
 
   class Memory extends Abstract.Memory {
 

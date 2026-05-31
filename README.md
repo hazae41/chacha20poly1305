@@ -16,10 +16,6 @@ npm install --save-peer @hazae41/chacha20poly1305
 
 ## Implementation
 
-### Default
-
-Noble (@noble/ciphers) will be used by default
-
 ### WebAssembly
 
 ```bash
