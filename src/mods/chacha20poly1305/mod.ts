@@ -17,7 +17,7 @@ export class Cipher {
    * @param key 
    * @returns 
    */
-  static import(key: Uint8Array) {
+  static import(key: Uint8Array): Cipher {
     const { Memory, ChaCha20Poly1305Cipher } = chaCha20Poly1305Wasm
 
     const inner = new ChaCha20Poly1305Cipher(new Memory(key))
@@ -31,7 +31,7 @@ export class Cipher {
    * @param nonce 
    * @returns 
    */
-  encrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array {
+  encrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array<ArrayBuffer> {
     const { Memory } = chaCha20Poly1305Wasm
 
     const result = this.inner.encrypt(new Memory(message), new Memory(nonce))
@@ -45,7 +45,7 @@ export class Cipher {
    * @param nonce 
    * @returns 
    */
-  decrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array {
+  decrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array<ArrayBuffer> {
     const { Memory } = chaCha20Poly1305Wasm
 
     const result = this.inner.decrypt(new Memory(message), new Memory(nonce))
