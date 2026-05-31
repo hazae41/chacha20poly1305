@@ -20,7 +20,7 @@ npm install @hazae41/chacha20poly1305
 const key = crypto.getRandomValues(new Uint8Array(32))
 const cipher = new chaCha20Poly1305.Cipher(key)
 
-const message = crypto.getRandomValues(new Uint8Array(256))
+const message = new TextEncoder().encode("Hello world")
 const nonce = crypto.getRandomValues(new Uint8Array(12))
 
 const encrypted = cipher.encrypt(message, nonce)
