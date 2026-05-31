@@ -36,7 +36,7 @@ export class Cipher {
 
     const result = this.inner.encrypt(new Memory(message), new Memory(nonce))
 
-    return result.bytes
+    return new Uint8Array(result.bytes)
   }
 
   /**
@@ -50,7 +50,7 @@ export class Cipher {
 
     const result = this.inner.decrypt(new Memory(message), new Memory(nonce))
 
-    return result.bytes
+    return new Uint8Array(result.bytes)
   }
 
 }
