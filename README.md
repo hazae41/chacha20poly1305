@@ -1,9 +1,9 @@
 # ChaCha20Poly1305
 
-ChaCha20Poly1305 adapter for WebAssembly and JS implementations
+ChaCha20Poly1305 for the web
 
 ```bash
-npm install --save-peer @hazae41/chacha20poly1305
+npm install @hazae41/chacha20poly1305
 ```
 
 [**📦 NPM**](https://www.npmjs.com/package/@hazae41/chacha20poly1305)
@@ -14,19 +14,15 @@ npm install --save-peer @hazae41/chacha20poly1305
 - 100% TypeScript and ESM
 - No external dependencies
 
-## Implementation
+## Usage 
 
-### WebAssembly
+```tsx
+const key = crypto.getRandomValues(new Uint8Array(32))
+const cipher = new chaCha20Poly1305.Cipher(key)
 
-```bash
-npm i @hazae41/chacha20poly1305-wasm
-```
+const message = crypto.getRandomValues(new Uint8Array(256))
+const nonce = crypto.getRandomValues(new Uint8Array(12))
 
-```typescript
-import { chaCha20Poly1305 } from "@hazae41/chacha20poly1305"
-import { chaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305-wasm"
-
-await chaCha20Poly1305Wasm.load() // or chaCha20Poly1305Wasm.loadSync() 
-
-chaCha20Poly1305.set(chaCha20Poly1305.fromWasm(chaCha20Poly1305Wasm))
+const encrypted = cipher.encrypt(message, nonce)
+const decrypted = cipher.decrypt(encrypted, nonce)
 ```
