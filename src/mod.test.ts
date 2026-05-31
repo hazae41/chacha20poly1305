@@ -3,7 +3,7 @@ import { chaCha20Poly1305 } from "./mod.ts";
 
 test("chacha", () => {
   const key = crypto.getRandomValues(new Uint8Array(32))
-  const cipher = new chaCha20Poly1305.Cipher(key)
+  const cipher = chaCha20Poly1305.Cipher.import(key)
 
   const message = crypto.getRandomValues(new Uint8Array(256))
   const nonce = crypto.getRandomValues(new Uint8Array(12))

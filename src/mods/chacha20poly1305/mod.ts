@@ -4,20 +4,22 @@ await chaCha20Poly1305Wasm.load()
 
 export class Cipher {
 
-  #inner: chaCha20Poly1305Wasm.ChaCha20Poly1305Cipher
+  constructor(
+    readonly inner: chaCha20Poly1305Wasm.ChaCha20Poly1305Cipher
+  ) { }
 
-  constructor(key: Uint8Array) {
+  static import(key: Uint8Array) {
     const { Memory, ChaCha20Poly1305Cipher } = chaCha20Poly1305Wasm
 
-    this.#inner = new ChaCha20Poly1305Cipher(new Memory(key))
+    const inner = new ChaCha20Poly1305Cipher(new Memory(key))
 
-    return
+    return new Cipher(inner)
   }
 
   encrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array {
     const { Memory } = chaCha20Poly1305Wasm
 
-    const result = this.#inner.encrypt(new Memory(message), new Memory(nonce))
+    const result = this.inner.encrypt(new Memory(message), new Memory(nonce))
 
     return result.bytes
   }
@@ -25,7 +27,7 @@ export class Cipher {
   decrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array {
     const { Memory } = chaCha20Poly1305Wasm
 
-    const result = this.#inner.decrypt(new Memory(message), new Memory(nonce))
+    const result = this.inner.decrypt(new Memory(message), new Memory(nonce))
 
     return result.bytes
   }

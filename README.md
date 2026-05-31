@@ -18,7 +18,7 @@ npm install @hazae41/chacha20poly1305
 
 ```tsx
 const key = crypto.getRandomValues(new Uint8Array(32))
-const cipher = new chaCha20Poly1305.Cipher(key)
+const cipher = chaCha20Poly1305.Cipher.import(key)
 
 const message = new TextEncoder().encode("Hello world")
 const nonce = crypto.getRandomValues(new Uint8Array(12))
