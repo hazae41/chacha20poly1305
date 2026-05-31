@@ -1,6 +1,6 @@
 # ChaCha20Poly1305
 
-ChaCha20Poly1305 for the web
+ChaCha20-Poly1305 for the web
 
 ```bash
 npm install @hazae41/chacha20poly1305
