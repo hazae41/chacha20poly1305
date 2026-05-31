@@ -8,6 +8,10 @@ export class Cipher {
     readonly inner: chaCha20Poly1305Wasm.ChaCha20Poly1305Cipher
   ) { }
 
+  [Symbol.dispose]() {
+    this.inner[Symbol.dispose]()
+  }
+
   static import(key: Uint8Array) {
     const { Memory, ChaCha20Poly1305Cipher } = chaCha20Poly1305Wasm
 
