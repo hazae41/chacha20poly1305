@@ -1,6 +1,6 @@
-import { chaCha20Poly1305Wasm } from "@hazae41/chacha20poly1305-wasm";
+import { ChaCha20Poly1305Cipher, load, Memory } from "@hazae41/chacha20poly1305-wasm";
 
-await chaCha20Poly1305Wasm.load()
+await load()
 
 export class Cipher {
 
@@ -9,7 +9,7 @@ export class Cipher {
    * @param inner 
    */
   constructor(
-    readonly inner: chaCha20Poly1305Wasm.ChaCha20Poly1305Cipher
+    readonly inner: ChaCha20Poly1305Cipher
   ) { }
 
   /**
@@ -18,11 +18,7 @@ export class Cipher {
    * @returns 
    */
   static import(key: Uint8Array): Cipher {
-    const { Memory, ChaCha20Poly1305Cipher } = chaCha20Poly1305Wasm
-
-    const inner = new ChaCha20Poly1305Cipher(new Memory(key))
-
-    return new Cipher(inner)
+    return new Cipher(new ChaCha20Poly1305Cipher(new Memory(key)))
   }
 
   /**
@@ -32,11 +28,7 @@ export class Cipher {
    * @returns 
    */
   encrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array<ArrayBuffer> {
-    const { Memory } = chaCha20Poly1305Wasm
-
-    const result = this.inner.encrypt(new Memory(message), new Memory(nonce))
-
-    return new Uint8Array(result.bytes)
+    return new Uint8Array(this.inner.encrypt(new Memory(message), new Memory(nonce)).bytes)
   }
 
   /**
@@ -46,11 +38,7 @@ export class Cipher {
    * @returns 
    */
   decrypt(message: Uint8Array, nonce: Uint8Array): Uint8Array<ArrayBuffer> {
-    const { Memory } = chaCha20Poly1305Wasm
-
-    const result = this.inner.decrypt(new Memory(message), new Memory(nonce))
-
-    return new Uint8Array(result.bytes)
+    return new Uint8Array(this.inner.decrypt(new Memory(message), new Memory(nonce)).bytes)
   }
 
 }
