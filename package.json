@@ -32,6 +32,6 @@
     "esmodules"
   ],
   "dependencies": {
-    "@hazae41/chacha20poly1305-wasm": "^2.0.5"
+    "@hazae41/chacha20poly1305-wasm": "^2.0.7"
   }
 }
