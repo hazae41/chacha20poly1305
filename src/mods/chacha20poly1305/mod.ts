@@ -1,6 +1,6 @@
-import { ChaCha20Poly1305Cipher, load, Memory } from "@hazae41/chacha20poly1305-wasm";
+import { ChaCha20Poly1305Cipher, loadSync, Memory } from "@hazae41/chacha20poly1305-wasm";
 
-await load()
+loadSync()
 
 export class Cipher {
 
